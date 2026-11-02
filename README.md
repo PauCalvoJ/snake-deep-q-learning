@@ -41,7 +41,7 @@ pip install -r requirements.txt
 | `python main.py` | Entrena viendo la ventana. Si existe `modelo_deep_snake.pth`, continúa desde él |
 | `python main.py --rapido` | Entrena sin ventana, mucho más rápido |
 
-Para entrenar desde cero, mueve o renombra `modelo_deep_snake.pth`. Ten en cuenta que cuanto mejor juega, más largas son las partidas: con más de 100 manzanas, una sola partida puede tardar 15 segundos.
+Para entrenar desde cero, mueve o renombra `modelo_deep_snake.pth`. Ten en cuenta que cuanto mejor juega, más largas son las partidas: con más de 100 manzanas, una sola partida puede tardar varios segundos. Al entrenar se muestra el tiempo medio por paso (`ms/paso`).
 
 ## 🧠 Cómo funciona
 
@@ -71,6 +71,7 @@ Red densa de **2 capas**: `20 entradas → 256 neuronas (ReLU) → 4 salidas`, u
 - **Experience Replay:** los pasos se guardan en una memoria (hasta 100.000) y al final de cada partida se entrena con un lote aleatorio de 1000. Además se entrena con cada paso nada más darlo.
 - **Red objetivo (target network):** los objetivos se calculan con una copia de la red que solo se actualiza cada 10 partidas. Así el objetivo no se mueve en cada paso y el entrenamiento es más estable.
 - **Exploración ε-greedy:** al principio el agente elige acciones al azar con probabilidad 0.4, que baja hasta 0 en las primeras 80 partidas.
+- **Rendimiento:** el estado se calcula una sola vez por paso y PyTorch usa un único hilo de CPU (`torch.set_num_threads(1)`), porque con una red tan pequeña repartir el trabajo entre núcleos cuesta más de lo que ahorra. Solo el cambio de hilos bajó el entrenamiento de unos 3,5 a 1,8 ms por paso.
 
 | Hiperparámetro | Valor |
 |---|---|
@@ -98,7 +99,7 @@ Red densa de **2 capas**: `20 entradas → 256 neuronas (ReLU) → 4 salidas`, u
 
 ## 🔧 Posibles mejoras
 
-- Entrenar más rápido, por ejemplo entrenando por lotes cada cierto número de pasos en vez de en todos.
+- Entrenar aún más rápido, por ejemplo entrenando por lotes cada cierto número de pasos en vez de en todos.
 - Darle a la red el tablero entero como imagen y usar una red convolucional, para que aprenda sola qué es importante en vez de usar características diseñadas a mano.
 - Variantes como Double DQN o Dueling DQN.
 

@@ -43,7 +43,7 @@ class SnakeGame:
                 return
 
     def get_state(self):
-        """Estado de 16 valores (0 o 1) que ve el agente."""
+        """Estado de 20 valores (0 o 1) que ve el agente."""
         x, y = self.serpiente[0]
         b = TAM_BLOQUE
 
